@@ -1,0 +1,5 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     '/Volumes/code/COM108-PS52189-BaoHuy/Lab1/output/Bai1_HelloC'
+relocations:     []
+...
