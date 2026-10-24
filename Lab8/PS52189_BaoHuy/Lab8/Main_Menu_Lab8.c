@@ -6,14 +6,15 @@ struct SinhVien {
     char nganhHoc[50];
     float diemTB;
 };
-void xoaBoDem(void);
-void loaiBoXuongDong(char str[]);
 void nhapVatXuatDanhSach(struct SinhVien ds[], int *n);
 void sapXepTheoDiem(struct SinhVien ds[], int n);
 void timKiemTheoMSSV(struct SinhVien ds[], int n);
 void xuatHocBongTheoNganh(struct SinhVien ds[], int n);
+int docSoNguyen(const char *prompt, int *giaTri);
+int docSoThuc(const char *prompt, float *giaTri);
+int docDong(const char *prompt, char str[], size_t kichThuoc);
 
-int main() {
+int main(void) {
     struct SinhVien dsSV[50];
     int n = 0; 
     int chon;
@@ -28,8 +29,14 @@ int main() {
         printf("| 4. Xuat sinh vien nhan hoc bong theo nganh |\n");
         printf("| 5. Thoat chuong trinh                      |\n");
         printf("+--------------------------------------------+\n");
-        printf(">> Xin moi chon chuc nang (1-5): ");
-        scanf("%d", &chon);
+        int ketQuaNhap = docSoNguyen(">> Xin moi chon chuc nang (1-5): ", &chon);
+        if (ketQuaNhap == 0) {
+            break;
+        }
+        if (ketQuaNhap < 0) {
+            printf("\nChuc nang khong hop le! Vui long nhap so tu 1 den 5.\n\n");
+            continue;
+        }
 
         switch (chon) {
             case 1:
@@ -67,52 +74,96 @@ int main() {
     return 0;
 }
 
-// Hàm hỗ trợ xóa bộ đệm bàn phím
-void xoaBoDem() {
+int docSoNguyen(const char *prompt, int *giaTri) {
+    printf("%s", prompt);
+    if (scanf("%d", giaTri) != 1) {
+        int kyTu;
+        while ((kyTu = getchar()) != '\n' && kyTu != EOF) {
+        }
+        return feof(stdin) ? 0 : -1;
+    }
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
+    return 1;
 }
 
-void loaiBoXuongDong(char str[]) {
+int docSoThuc(const char *prompt, float *giaTri) {
+    printf("%s", prompt);
+    if (scanf("%f", giaTri) != 1) {
+        int kyTu;
+        while ((kyTu = getchar()) != '\n' && kyTu != EOF) {
+        }
+        return feof(stdin) ? 0 : -1;
+    }
+    int kyTu;
+    while ((kyTu = getchar()) != '\n' && kyTu != EOF) {
+    }
+    return 1;
+}
+
+int docDong(const char *prompt, char str[], size_t kichThuoc) {
+    printf("%s", prompt);
+    if (fgets(str, kichThuoc, stdin) == NULL) {
+        return 0;
+    }
     size_t len = strlen(str);
     if (len > 0 && str[len - 1] == '\n') {
         str[len - 1] = '\0';
+    } else if (!feof(stdin)) {
+        int kyTu;
+        while ((kyTu = getchar()) != '\n' && kyTu != EOF) {
+        }
     }
+    return 1;
 }
 
 // Bai 1: Nhap va xuat danh sach sinh vien
 void nhapVatXuatDanhSach(struct SinhVien ds[], int *n) {
-    do {
-        printf("\nNhap so luong sinh vien (1 - 50): ");
-        scanf("%d", n);
-        if (*n <= 0 || *n > 50) {
-            printf("So luong sinh vien khong hop le! Vui long nhap lai.\n");
+    while (1) {
+        int ketQuaNhap = docSoNguyen("\nNhap so luong sinh vien (1 - 50): ", n);
+        if (ketQuaNhap == 0) {
+            *n = 0;
+            return;
         }
-    } while (*n <= 0 || *n > 50);
+        if (ketQuaNhap < 0) {
+            printf("So luong sinh vien khong hop le! Vui long nhap lai.\n");
+            continue;
+        }
+        if (*n > 0 && *n <= 50) {
+            break;
+        }
+        printf("So luong sinh vien khong hop le! Vui long nhap lai.\n");
+    }
 
     for (int i = 0; i < *n; i++) {
         printf("\n--- Nhap thong tin sinh vien thu [%d] ---\n", i + 1);
-        
-        printf("MSSV: ");
-        xoaBoDem();
-        fgets(ds[i].mssv, sizeof(ds[i].mssv), stdin);
-        loaiBoXuongDong(ds[i].mssv);
+        if (!docDong("MSSV: ", ds[i].mssv, sizeof(ds[i].mssv))) {
+            *n = 0;
+            return;
+        }
 
-        printf("Ten SV: ");
-        fgets(ds[i].tenSV, sizeof(ds[i].tenSV), stdin);
-        loaiBoXuongDong(ds[i].tenSV);
+        if (!docDong("Ten SV: ", ds[i].tenSV, sizeof(ds[i].tenSV))) {
+            *n = 0;
+            return;
+        }
 
-        printf("Nganh hoc: ");
-        fgets(ds[i].nganhHoc, sizeof(ds[i].nganhHoc), stdin);
-        loaiBoXuongDong(ds[i].nganhHoc);
+        if (!docDong("Nganh hoc: ", ds[i].nganhHoc, sizeof(ds[i].nganhHoc))) {
+            *n = 0;
+            return;
+        }
 
-        do {
-            printf("Diem TB (0.0 - 10.0): ");
-            scanf("%f", &ds[i].diemTB);
-            if (ds[i].diemTB < 0.0 || ds[i].diemTB > 10.0) {
-                printf("Diem TB khong hop le! Nhap lai trong khoang 0.0 den 10.0.\n");
+        while (1) {
+            int ketQuaNhap = docSoThuc("Diem TB (0.0 - 10.0): ", &ds[i].diemTB);
+            if (ketQuaNhap == 0) {
+                *n = 0;
+                return;
             }
-        } while (ds[i].diemTB < 0.0 || ds[i].diemTB > 10.0);
+            if (ketQuaNhap < 0 || !(ds[i].diemTB >= 0.0f && ds[i].diemTB <= 10.0f)) {
+                printf("Diem TB khong hop le! Nhap lai trong khoang 0.0 den 10.0.\n");
+            } else {
+                break;
+            }
+        }
     }
 
     printf("\n================ DANH SACH SINH VIEN ================\n");
@@ -151,10 +202,9 @@ void sapXepTheoDiem(struct SinhVien ds[], int n) {
 // Bai 3: Tim kiem sinh vien theo MSSV
 void timKiemTheoMSSV(struct SinhVien ds[], int n) {
     char mssvTim[50];
-    printf("\nNhap ma so sinh vien can tim: ");
-    xoaBoDem();
-    fgets(mssvTim, sizeof(mssvTim), stdin);
-    loaiBoXuongDong(mssvTim);
+    if (!docDong("\nNhap ma so sinh vien can tim: ", mssvTim, sizeof(mssvTim))) {
+        return;
+    }
 
     int timThay = 0;
     for (int i = 0; i < n; i++) {
