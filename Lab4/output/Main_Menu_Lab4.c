@@ -21,7 +21,7 @@ void bai2_tinhTrungBinhCong() {
 
 
     for (int i = min; i <= max; i++) {
-        if (i % 2 == 0) { // Kiểm tra chia hết cho 2 
+        if (i % 2 == 0) { // Kiểm tra chia hết cho 2 (đúng với cả số âm)
             tong += i;
             bienDem++;
         }
