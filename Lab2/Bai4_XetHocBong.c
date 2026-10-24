@@ -1,11 +1,17 @@
 #include <stdio.h>
-int main() {
+int main(void) {
     float diemTB;
     int hanhKiem;
     printf("Nhap diem trung binh: ");
-    scanf("%f", &diemTB);
+    if (scanf("%f", &diemTB) != 1 || !(diemTB >= 0.0f && diemTB <= 10.0f)) {
+        printf("Diem trung binh khong hop le (0-10).\n");
+        return 1;
+    }
     printf("Nhap hanh kiem (1 = Tot, 0 = Khac): ");
-    scanf("%d", &hanhKiem);
+    if (scanf("%d", &hanhKiem) != 1 || (hanhKiem != 0 && hanhKiem != 1)) {
+        printf("Hanh kiem khong hop le.\n");
+        return 1;
+    }
     int dieuKienDiem = (diemTB >= 8.0);
     int dieuKienHanhKiem = (hanhKiem == 1);
     int ketQua = dieuKienDiem && dieuKienHanhKiem;
