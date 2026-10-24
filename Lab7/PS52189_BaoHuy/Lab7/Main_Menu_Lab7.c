@@ -118,7 +118,7 @@ void bai1_DemNguyenAmPhuAm(void) {
     s[strcspn(s, "\n")] = '\0';
 
     for (int i = 0; s[i] != '\0'; i++) {
-        char c = tolower(s[i]);
+        char c = (char)tolower((unsigned char)s[i]);
         if (isalpha(c)) {
             if (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u') {
                 nguyen_am++;
