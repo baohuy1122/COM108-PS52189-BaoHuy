@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <math.h>
-void thoatChuongTrinh() {
+
+void thoatChuongTrinh(void) {
     printf("Thoat chuong trinh. Tam biet!\n");
 }
 
-void tinhHocLuc(){
+void tinhHocLuc(void){
     // Điểm ≥ 9.0: Xuất sắc.
     // Từ 8.0 đến dưới 9.0: Giỏi.
     // Từ 6.5 đến dưới 8.0: Khá.
@@ -15,8 +16,14 @@ void tinhHocLuc(){
     float diem;
     do {
         printf("Nhap diem (0-10): ");
-        scanf("%f", &diem);
-    } while (diem < 0 || diem > 10);
+        if (scanf("%f", &diem) != 1) {
+            int c;
+            while ((c = getchar()) != '\n' && c != EOF) {
+            }
+            printf("Diem khong hop le.\n");
+            return;
+        }
+    } while (!(diem >= 0.0f && diem <= 10.0f));
 
     if (diem >= 9.0) {
         printf("Xuat sac\n");
@@ -33,11 +40,18 @@ void tinhHocLuc(){
     }
 }
 
-void giaiPTBacHai(){
+void giaiPTBacHai(void){
     printf("Giai phuong trinh bac hai\n");
     float a, b, c, x1, x2, delta;
     printf("Nhap a, b, c: ");
-    scanf("%f %f %f", &a, &b, &c);
+    if (scanf("%f %f %f", &a, &b, &c) != 3 ||
+        !isfinite(a) || !isfinite(b) || !isfinite(c)) {
+        int kyTu;
+        while ((kyTu = getchar()) != '\n' && kyTu != EOF) {
+        }
+        printf("He so khong hop le.\n");
+        return;
+    }
     printf("Phuong trinh %.0fx2 + %.0fx + %.0f = 0\n", a, b, c);
 
     if (a == 0) {
@@ -66,11 +80,12 @@ void giaiPTBacHai(){
     }
 }
 
-void tinhTienDien(){
+void tinhTienDien(void){
     printf("Tinh tien dien tieu thu\n");
+    printf("Can bang gia theo de bai de tinh chinh xac tien dien.\n");
 }
 
-int main(){
+int main(void){
     int chon;
 
     do {
@@ -80,7 +95,16 @@ int main(){
         printf("2. Giai phuong trinh bac hai\n");
         printf("3. Tinh tien dien tieu thu\n");
         printf("Nhap lua chon cua ban: ");
-        scanf("%d", &chon);
+        if (scanf("%d", &chon) != 1) {
+            int kyTu;
+            while ((kyTu = getchar()) != '\n' && kyTu != EOF) {
+            }
+            if (feof(stdin)) {
+                break;
+            }
+            printf("Lua chon khong hop le. Vui long nhap so tu 0 den 3.\n");
+            continue;
+        }
 
         switch (chon) {
             case 0:
